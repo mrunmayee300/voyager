@@ -6,7 +6,7 @@
     "dev": "tsx watch src/main.ts",
     "build": "npm run generate --workspace=@voyager/database && tsc",
     "start": "node dist/main.js",
-    "start:prod": "npm run migrate:deploy --workspace=@voyager/database && node dist/main.js"
+    "start:prod": "node scripts/start-production.js"
   },
   "dependencies": {
     "@prisma/client": "^6.8.2",

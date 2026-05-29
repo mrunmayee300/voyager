@@ -8,6 +8,8 @@ A full-stack platform for international travel planning: purpose-aware visa guid
 
 ## Overview
 
+![Demo](docs\1.png)
+
 Voyager helps travelers plan trips from home country to destination with:
 
 - Step-by-step **trip planner** (route, dates, budget, travel purpose)

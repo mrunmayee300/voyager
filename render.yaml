@@ -1,5 +1,5 @@
 # Render Blueprint — https://render.com/docs/blueprint-spec
-# Deploy: connect GitHub repo → New Blueprint → select render.yaml
+# Deploy: Dashboard → New → Blueprint → connect repo
 
 services:
   - type: web
@@ -14,7 +14,9 @@ services:
       - key: NODE_ENV
         value: production
       - key: DATABASE_URL
-        sync: false
+        fromDatabase:
+          name: voyager-db
+          property: connectionString
       - key: JWT_SECRET
         generateValue: true
       - key: JWT_EXPIRES_IN

@@ -57,14 +57,19 @@ DATABASE_URL="postgresql://..." npm run db:seed
 1. [dashboard.render.com](https://dashboard.render.com) → **New** → **Blueprint**
 2. Connect your GitHub repo
 3. Render reads `render.yaml` and creates `voyager-api`
-4. Set environment variables:
+4. Environment variables (Blueprint links DB automatically):
 
 | Variable | Value |
 |----------|--------|
-| `DATABASE_URL` | Postgres connection string |
+| `DATABASE_URL` | Auto-linked from `voyager-db` via `render.yaml` |
 | `CORS_ORIGIN` | `https://YOUR-VERCEL-APP.vercel.app` |
 | `OPENAI_API_KEY` | (optional) |
-| `REDIS_URL` | (optional) Upstash Redis URL |
+
+**If you see `Environment variable not found: DATABASE_URL`:**
+
+1. Render Dashboard → **voyager-api** → **Environment**
+2. Add `DATABASE_URL` = **Internal Connection String** from your Postgres (`voyager-db` → Connect)
+3. Save → **Manual Deploy**
 
 5. Deploy → copy API URL, e.g. `https://voyager-api.onrender.com`
 
