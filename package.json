@@ -1,0 +1,25 @@
+{
+  "name": "voyager-travel-platform",
+  "version": "1.0.0",
+  "private": true,
+  "workspaces": [
+    "apps/*",
+    "packages/*"
+  ],
+  "scripts": {
+    "dev": "concurrently \"npm run dev:api\" \"npm run dev:web\"",
+    "dev:web": "npm run dev --workspace=@voyager/web",
+    "dev:api": "npm run dev --workspace=@voyager/api",
+    "build": "npm run build --workspaces --if-present",
+    "db:generate": "npm run generate --workspace=@voyager/database",
+    "db:migrate": "npm run migrate --workspace=@voyager/database",
+    "db:seed": "npm run seed --workspace=@voyager/database",
+    "db:studio": "npm run studio --workspace=@voyager/database",
+    "db:migrate:deploy": "npm run migrate:deploy --workspace=@voyager/database",
+    "build:web": "npm run build --workspace=@voyager/web",
+    "build:api": "npm run build --workspace=@voyager/api"
+  },
+  "devDependencies": {
+    "concurrently": "^9.1.2"
+  }
+}

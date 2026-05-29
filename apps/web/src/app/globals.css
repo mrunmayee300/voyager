@@ -1,0 +1,67 @@
+@import "tailwindcss";
+@import "leaflet/dist/leaflet.css";
+
+@theme {
+  --font-sans: var(--font-inter), system-ui, sans-serif;
+  --font-display: var(--font-manrope), system-ui, sans-serif;
+
+  --color-sand-50: #faf8f5;
+  --color-sand-100: #f3efe8;
+  --color-sand-200: #e8e0d4;
+  --color-sand-300: #d4c8b8;
+  --color-sand-800: #3d3832;
+  --color-sand-900: #1f1c19;
+
+  --color-ocean-50: #f4f8fa;
+  --color-ocean-100: #e4eef3;
+  --color-ocean-500: #4a7c94;
+  --color-ocean-600: #3d6679;
+  --color-ocean-700: #2f4f5f;
+  --color-ocean-800: #243d4a;
+
+  --color-accent: #c4704a;
+  --color-accent-hover: #a85d3d;
+
+  --radius-sm: 0.375rem;
+  --radius-md: 0.5rem;
+  --radius-lg: 0.75rem;
+}
+
+@layer base {
+  html {
+    scroll-behavior: smooth;
+  }
+
+  body {
+    @apply bg-sand-50 text-sand-900 antialiased;
+    font-feature-settings: "kern" 1, "liga" 1;
+  }
+
+  ::selection {
+    @apply bg-ocean-100 text-ocean-800;
+  }
+}
+
+@layer utilities {
+  .text-balance {
+    text-wrap: balance;
+  }
+
+  .editorial-heading {
+    font-family: var(--font-display);
+    letter-spacing: -0.02em;
+    line-height: 1.1;
+  }
+
+  .section-padding {
+    @apply px-5 py-16 md:px-8 md:py-24 lg:px-12;
+  }
+
+  .card-elevated {
+    @apply rounded-lg border border-sand-200/80 bg-white shadow-[0_1px_3px_rgba(31,28,25,0.06),0_8px_24px_rgba(31,28,25,0.04)];
+  }
+
+  .font-display {
+    font-family: var(--font-display);
+  }
+}
