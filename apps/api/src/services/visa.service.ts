@@ -7,14 +7,21 @@ import {
   type VisaRequirementShape,
 } from './visa-purpose.service';
 
+export interface VisaRequirementResponse {
+  found: boolean;
+  requirement: VisaRequirementShape;
+  purpose?: string;
+  message?: string;
+}
+
 export async function getVisaRequirement(
   originCode: string,
   destinationCode: string,
   purpose?: TravelPurpose | string | null,
-) {
+): Promise<VisaRequirementResponse> {
   const purposeKey = (purpose?.toString().toUpperCase() || 'TOURISM') as TravelPurpose;
   const cacheKey = `visa:${originCode}:${destinationCode}:${purposeKey}`;
-  const cached = await cacheGet<unknown>(cacheKey);
+  const cached = await cacheGet<VisaRequirementResponse>(cacheKey);
   if (cached) return cached;
 
   const origin = await prisma.country.findUnique({ where: { code: originCode.toUpperCase() } });
@@ -45,7 +52,7 @@ export async function getVisaRequirement(
 
   const tailored = applyPurposeToRequirement(baseRequirement, purposeKey);
 
-  const result = rule
+  const result: VisaRequirementResponse = rule
     ? { found: true, requirement: tailored, purpose: purposeKey }
     : {
         found: false,

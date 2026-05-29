@@ -1,7 +1,11 @@
 import { Router } from 'express';
 import { z } from 'zod';
 import { prisma } from '../lib/prisma';
-import { geocodeCity, searchCentersByCity } from '../services/osm.service';
+import {
+  geocodeCity,
+  searchCentersByCity,
+  type CentersSearchSuccess,
+} from '../services/osm.service';
 
 export const centersRouter = Router();
 
@@ -129,46 +133,48 @@ centersRouter.get('/nearby', async (req, res, next) => {
         return res.status(404).json(osmResult);
       }
 
+      const osm: CentersSearchSuccess = osmResult;
+
       // Merge seed data for cities we have locally (e.g. extra VFS details for Mumbai)
-      if (osmResult.centers.length > 0 || source === 'osm') {
+      if (osm.centers.length > 0 || source === 'osm') {
         const { centers: dbExtras } = await getDatabaseCentersForCity(
           cityTrimmed,
           typeFilter,
-          osmResult.reference.latitude,
-          osmResult.reference.longitude,
+          osm.reference.latitude,
+          osm.reference.longitude,
         );
 
-        const osmIds = new Set(osmResult.centers.map((c) => c.name.toLowerCase()));
+        const osmIds = new Set(osm.centers.map((c) => c.name.toLowerCase()));
         const merged = [
-          ...osmResult.centers,
+          ...osm.centers,
           ...dbExtras.filter((d) => !osmIds.has(d.name.toLowerCase())),
         ].sort((a, b) => a.distanceKm - b.distanceKm);
 
-        return res.json({ ...osmResult, centers: merged });
+        return res.json({ ...osm, centers: merged });
       }
 
       // OSM geocoded OK but zero results — try DB only for that exact city
       const { centers: dbCenters, cityRecord } = await getDatabaseCentersForCity(
         cityTrimmed,
         typeFilter,
-        osmResult.reference.latitude,
-        osmResult.reference.longitude,
+        osm.reference.latitude,
+        osm.reference.longitude,
       );
 
       if (dbCenters.length > 0) {
         return res.json({
           found: true,
           source: 'database',
-          reference: osmResult.reference,
+          reference: osm.reference,
           centers: dbCenters,
           mapNote: 'Showing seeded local data. OpenStreetMap had no mapped offices nearby.',
         });
       }
 
       return res.json({
-        ...osmResult,
+        ...osm,
         centers: [],
-        mapNote: `No embassies or visa centers found within 50 km of ${osmResult.reference.resolvedName}. Try a nearby capital or check OpenStreetMap.`,
+        mapNote: `No embassies or visa centers found within 50 km of ${osm.reference.resolvedName}. Try a nearby capital or check OpenStreetMap.`,
       });
     } catch (osmErr) {
       console.warn('OSM lookup failed:', osmErr);

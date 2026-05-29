@@ -1,5 +1,5 @@
 import bcrypt from 'bcryptjs';
-import jwt from 'jsonwebtoken';
+import jwt, { type SignOptions } from 'jsonwebtoken';
 import { prisma } from '../lib/prisma';
 import { AppError } from '../lib/errors';
 import type { AuthPayload } from '../middleware/auth';
@@ -7,9 +7,10 @@ import type { AuthPayload } from '../middleware/auth';
 function signToken(payload: AuthPayload) {
   const secret = process.env.JWT_SECRET;
   if (!secret) throw new AppError('Server misconfigured', 500);
-  return jwt.sign(payload, secret, {
-    expiresIn: process.env.JWT_EXPIRES_IN || '7d',
-  });
+  const options: SignOptions = {
+    expiresIn: (process.env.JWT_EXPIRES_IN || '7d') as SignOptions['expiresIn'],
+  };
+  return jwt.sign(payload, secret, options);
 }
 
 export async function registerUser(data: {

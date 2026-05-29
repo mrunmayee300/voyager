@@ -276,13 +276,35 @@ export async function findCentersNear(
   return centers;
 }
 
+export type CentersSearchSuccess = {
+  found: true;
+  source: 'openstreetmap';
+  reference: {
+    city: string;
+    resolvedName: string;
+    latitude: number;
+    longitude: number;
+    country?: string;
+  };
+  centers: (OsmCenter & { distanceKm: number })[];
+  attribution: string;
+  mapNote: string;
+};
+
+export type CentersSearchFailure = {
+  found: false;
+  error: string;
+};
+
+export type CentersSearchResult = CentersSearchSuccess | CentersSearchFailure;
+
 export async function searchCentersByCity(options: {
   city: string;
   country?: string;
   type?: string;
   lat?: number;
   lng?: number;
-}) {
+}): Promise<CentersSearchResult> {
   let geo: GeocodedCity | null = null;
 
   if (options.lat != null && options.lng != null) {

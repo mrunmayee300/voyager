@@ -1,5 +1,5 @@
 import { randomBytes } from 'crypto';
-import { BudgetTier, TravelPurpose, TripStatus } from '@prisma/client';
+import { BudgetTier, Prisma, TravelPurpose, TripStatus } from '@prisma/client';
 import { prisma } from '../lib/prisma';
 import { AppError } from '../lib/errors';
 import { generateTravelPlan } from './planner.service';
@@ -58,13 +58,13 @@ export async function createTrip(
       budgetAmount: data.budgetAmount,
       travelerCount: data.travelerCount || 1,
       passportValidMonths: data.passportValidMonths,
-      checklist: plan.checklist,
-      timeline: plan.timeline,
-      visaSummary: plan.visa,
-      budgetBreakdown: plan.budget,
-      weatherSnapshot: plan.weather,
-      safetyNotices: plan.safety,
-      culturalTips: plan.culturalTips,
+      checklist: plan.checklist as unknown as Prisma.InputJsonValue,
+      timeline: plan.timeline as unknown as Prisma.InputJsonValue,
+      visaSummary: plan.visa as unknown as Prisma.InputJsonValue,
+      budgetBreakdown: plan.budget as unknown as Prisma.InputJsonValue,
+      weatherSnapshot: plan.weather as unknown as Prisma.InputJsonValue,
+      safetyNotices: plan.safety as unknown as Prisma.InputJsonValue,
+      culturalTips: plan.culturalTips as unknown as Prisma.InputJsonValue,
     },
     include: tripInclude,
   });
@@ -118,9 +118,16 @@ export async function updateTrip(
   const existing = await prisma.trip.findFirst({ where: { id: tripId, userId } });
   if (!existing) throw new AppError('Trip not found', 404);
 
+  const updateData: Prisma.TripUpdateInput = {};
+  if (data.title !== undefined) updateData.title = data.title;
+  if (data.status !== undefined) updateData.status = data.status;
+  if (data.checklist !== undefined) {
+    updateData.checklist = data.checklist as unknown as Prisma.InputJsonValue;
+  }
+
   return prisma.trip.update({
     where: { id: tripId },
-    data,
+    data: updateData,
     include: tripInclude,
   });
 }
