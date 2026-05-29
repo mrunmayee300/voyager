@@ -8,8 +8,6 @@ A full-stack platform for international travel planning: purpose-aware visa guid
 
 ## Overview
 
-![Demo](travel-support\docs\1.png)
-
 Voyager helps travelers plan trips from home country to destination with:
 
 - Step-by-step **trip planner** (route, dates, budget, travel purpose)
@@ -18,6 +16,8 @@ Voyager helps travelers plan trips from home country to destination with:
 - **Currency** conversion and budget estimates
 - **AI assistant** with formatted Markdown replies and source citations
 - **Saved trips** dashboard with share links
+
+![Voyager platform overview](docs/1.png)
 
 ---
 
